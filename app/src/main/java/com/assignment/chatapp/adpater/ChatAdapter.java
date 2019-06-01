@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.assignment.chatapp.R;
+import com.assignment.chatapp.Utils;
 import com.assignment.chatapp.model.Message;
 
 import java.text.SimpleDateFormat;
@@ -24,16 +25,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     private final int TYPE_INCOMING = 1;
     private final int TYPE_OUTGOING = 2;
     private List<Boolean> statusList;
+    private List<String> timeList;
 
 
     private static final String MSG_TYPE_TEXT = "text";
 
 
-    public ChatAdapter(Context context, List<String> chatMessages, List<Boolean> messageStatusList)
+    public ChatAdapter(Context context, List<String> chatMessages, List<Boolean> messageStatusList, List<String> time)
     {
         mContext = context;
         mChatMessages = chatMessages;
         statusList = messageStatusList;
+        timeList = time;
     }
 
 
@@ -55,14 +58,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(ChatAdapter.ChatViewHolder holder, int position) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        Date date = new Date();
         if(getItemViewType(position) == TYPE_INCOMING) {
             String chatMessage = mChatMessages.get(position);
             ((IncomingViewHolder)holder).chatTV.setVisibility(View.VISIBLE);
             ((IncomingViewHolder)holder).chatTV.setText(chatMessage);
             ((IncomingViewHolder)holder).chatIV.setVisibility(View.GONE);
-            ((IncomingViewHolder) holder).timeTV.setText(formatter.format(date));
+            ((IncomingViewHolder) holder).timeTV.setText(timeList.get(position));
         }
 
         if(getItemViewType(position) == TYPE_OUTGOING){
@@ -70,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             ((OutgoingViewHolder)holder).chatTV.setVisibility(View.VISIBLE);
             ((OutgoingViewHolder)holder).chatTV.setText(chatMessage);
             ((OutgoingViewHolder)holder).chatIV.setVisibility(View.GONE);
-            ((OutgoingViewHolder) holder).timeTV.setText(formatter.format(date));
+            ((OutgoingViewHolder) holder).timeTV.setText(timeList.get(position));
         }
 
     }
@@ -88,6 +89,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         }
 
         return TYPE_INCOMING;
+    }
+
+
+    public void clearAllData(){
+        mChatMessages.clear();
+        statusList.clear();
+        timeList.clear();
+        notifyDataSetChanged();
     }
 
     private boolean messageFromCurrentUser(int positon) {

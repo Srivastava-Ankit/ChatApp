@@ -3,6 +3,7 @@ package com.assignment.chatapp.di;
 import android.content.Context;
 
 import com.assignment.chatapp.Constants;
+import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.repository.IChatRestApi;
 import com.assignment.chatapp.repository.MessageReplyRepository;
 import com.assignment.chatapp.scope.UserScope;
@@ -24,7 +25,7 @@ public class IChatModule {
 
     @Provides
     @UserScope
-    MessageReplyRepository provideIChatRepository(IChatRestApi iChatRestApi,Context context){
+    MessageReplyRepository provideIChatRepository(IChatRestApi iChatRestApi, Context context){
 
         MessageReplyRepository messageReplyRepository = MessageReplyRepository.getInstance();
         messageReplyRepository.setVariables(iChatRestApi,context);

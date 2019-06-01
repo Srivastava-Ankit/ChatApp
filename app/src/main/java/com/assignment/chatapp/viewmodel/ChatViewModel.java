@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
+import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.model.MessageResponse;
 import com.assignment.chatapp.repository.MessageReplyRepository;
 
@@ -32,7 +33,8 @@ public class ChatViewModel extends AndroidViewModel {
         return messageResponseError;
     }
 
-    public void getMessageReply(String message, String externalId){
+    public void getMessageReply(String message, String externalId, ChatRepository chatRepository){
+        repository.setChatRepository(chatRepository);
         repository.getMessageReply(message, externalId, messageResponseSuccess, messageResponseError);
     }
 

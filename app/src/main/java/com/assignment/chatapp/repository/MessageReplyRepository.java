@@ -4,6 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.assignment.chatapp.Constants;
+import com.assignment.chatapp.Utils;
+import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.model.MessageResponse;
 
 import retrofit2.Call;
@@ -15,6 +17,7 @@ public class MessageReplyRepository {
     private Context mContext;
     private IChatRestApi iChatRestApi;
     private static MessageReplyRepository instance;
+    private ChatRepository chatRepository;
 
 
     public static MessageReplyRepository getInstance() {
@@ -34,6 +37,10 @@ public class MessageReplyRepository {
         mContext = context;
     }
 
+    public void setChatRepository(ChatRepository chatRepository){
+        this.chatRepository = chatRepository;
+    }
+
 
     public void getMessageReply(String message, String externalId, final MutableLiveData<MessageResponse> messageResponseSuccess,
                                 final MutableLiveData<Boolean> messageResponseError){
@@ -42,6 +49,8 @@ public class MessageReplyRepository {
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                 if(response.isSuccessful()){
                     messageResponseSuccess.setValue(response.body());
+                    String message = response.body().getMessage().getMessage();
+                    chatRepository.insertChat(message, false, Utils.getTime());
                 }else {
                     messageResponseError.setValue(true);
                 }

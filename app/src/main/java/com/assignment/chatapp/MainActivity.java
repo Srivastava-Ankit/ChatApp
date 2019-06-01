@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.assignment.chatapp.adpater.ChatAdapter;
 import com.assignment.chatapp.component.ApplicationComponent;
+import com.assignment.chatapp.database.Chat;
+import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.databinding.ActivityMainBinding;
 import com.assignment.chatapp.di.DaggerIChatComponent;
 import com.assignment.chatapp.di.IChatComponent;
@@ -42,7 +44,10 @@ public class MainActivity extends AppCompatActivity {
     private ChatAdapter mChatAdapter;
     private List<String> messageList = new ArrayList<>();
     private List<Boolean> messageStatusList = new ArrayList<>();
+    private List<String> timeList = new ArrayList<>();
     final private Context mContext = this;
+    private ChatRepository chatRepository;
+
 
 
     @Override
@@ -60,16 +65,20 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         iChatComponent.inject(chatViewModel);
+        chatRepository = new ChatRepository(getApplicationContext());
+        initRecyclerView();
 
         binding.floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String message = binding.editText.getText().toString();
                 if(!message.isEmpty()) {
+                    onSendButtonClicked();
                     messageList.add(message);
                     messageStatusList.add(true);
-                    onSendButtonClicked();
-                    mChatAdapter = new ChatAdapter(mContext, messageList, messageStatusList);
+                    timeList.add(Utils.getTime());
+                    mChatAdapter.clearAllData();
+                    mChatAdapter = new ChatAdapter(mContext, messageList, messageStatusList, timeList);
                     mRecyclerView.setAdapter(mChatAdapter);
                 } else {
                     Toast.makeText(mContext, "Please Type Message", Toast.LENGTH_LONG).show();
@@ -80,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         ObserveMessageResponseSuccess();
         ObserveMessageResponseError();
 
-        initRecyclerView();
+
     }
 
 
@@ -92,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
                 if(messageResponse.getMessage() != null) {
                     messageList.add(messageResponse.getMessage().getMessage());
                     messageStatusList.add(false);
-                    mChatAdapter = new ChatAdapter(mContext, messageList, messageStatusList);
+                    timeList.add(Utils.getTime());
+                    mChatAdapter.clearAllData();
+                    mChatAdapter = new ChatAdapter(mContext, messageList, messageStatusList, timeList);
                     mRecyclerView.setAdapter(mChatAdapter);
                 }
             }
@@ -111,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getReplyMessage(String message){
-        chatViewModel.getMessageReply(message,externalId);
+        chatViewModel.getMessageReply(message,externalId, chatRepository);
     }
 
 
@@ -120,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        getAllChatHistory();
     }
 
 
@@ -127,5 +139,21 @@ public class MainActivity extends AppCompatActivity {
         String message = binding.editText.getText().toString();
         binding.editText.setText("");
         getReplyMessage(message);
+        chatRepository.insertChat(message, true, Utils.getTime());
+    }
+
+    public void getAllChatHistory(){
+        chatRepository.getChats().observe(this, new Observer<List<Chat>>() {
+            @Override
+            public void onChanged(@Nullable List<Chat> notes) {
+                for(Chat chat : notes) {
+                    messageList.add(chat.getMessage());
+                    messageStatusList.add(chat.getChatStatus());
+                    timeList.add(chat.getTime());
+                }
+                mChatAdapter = new ChatAdapter(mContext, messageList, messageStatusList, timeList);
+                mRecyclerView.setAdapter(mChatAdapter);
+            }
+        });
     }
 }
