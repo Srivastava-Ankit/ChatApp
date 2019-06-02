@@ -49,13 +49,9 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     final private Context mContext = this;
     private ChatRepository chatRepository;
     private Boolean isInternetConnected;
-
-    private List<Chat> pendingChat = new ArrayList<>();
-    private List<Integer> pending =  new ArrayList<>();
     private NetworkChangeReceiver networkChangeReceiver;
-
     private List<Chat> chatList = new ArrayList<>();
-    private List<Chat> pendingChatList = new ArrayList<>();
+
 
 
 
@@ -192,24 +188,6 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     }
 
 
-   public void retrysentMessage() {
-       chatRepository.getPendingChats().observe(this, new Observer<List<Chat>>() {
-           @Override
-           public void onChanged(@Nullable List<Chat> chats) {
-               pendingChat = chats;
-               updatePendingChat();
-           }
-       });
-   }
-
-
-
-   public void updatePendingChat(){
-
-        for(Chat chat: pendingChat){
-
-        }
-   }
 }
 
 
