@@ -17,8 +17,17 @@ public class Chat implements Serializable {
 
     String message;
     Boolean chatStatus;
+    Boolean sentStatus;
 
     String time;
+
+    public Boolean getSentStatus() {
+        return sentStatus;
+    }
+
+    public void setSentStatus(Boolean sentStatus) {
+        this.sentStatus = sentStatus;
+    }
 
     public String getTime() {
         return time;
@@ -32,7 +41,17 @@ public class Chat implements Serializable {
     @TypeConverters({TimestampConverter.class})
     private Date createdAt;
 
+    @ColumnInfo(name = "modified_at")
+    @TypeConverters({TimestampConverter.class})
+    private Date modifiedAt;
 
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 
     public int getChatId() {
         return chatId;

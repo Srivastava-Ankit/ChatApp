@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
+import com.assignment.chatapp.database.Chat;
 import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.model.MessageResponse;
 import com.assignment.chatapp.repository.MessageReplyRepository;

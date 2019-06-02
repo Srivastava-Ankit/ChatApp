@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.assignment.chatapp.Constants;
 import com.assignment.chatapp.Utils;
+import com.assignment.chatapp.database.Chat;
 import com.assignment.chatapp.database.ChatRepository;
 import com.assignment.chatapp.model.MessageResponse;
 
@@ -50,7 +51,7 @@ public class MessageReplyRepository {
                 if(response.isSuccessful()){
                     messageResponseSuccess.setValue(response.body());
                     String message = response.body().getMessage().getMessage();
-                    chatRepository.insertChat(message, false, Utils.getTime());
+                    chatRepository.insertChat(message, false, false, Utils.getTime());
                 }else {
                     messageResponseError.setValue(true);
                 }
