@@ -8,7 +8,7 @@ Language: Android
 
 IDE: Android Studio
 
-Lastest technologies: ViewModel, Dagger2, DataBinding, retrofit
+Lastest technologies: ViewModel, Dagger2, DataBinding, Retrofit
 
 Database: Room
 
